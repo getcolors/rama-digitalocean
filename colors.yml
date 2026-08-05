@@ -1,0 +1,97 @@
+# Desired state for rama-digitalocean. This file contains non-secret values
+# only. Credentials belong in the gitignored .envrc.private as COLORS_PAR_*
+# variables.
+#
+# Required for the enabled providers:
+#   DigitalOcean  COLORS_PAR_DO_TOKEN
+#   Cloudflare    COLORS_PAR_CLOUDFLARE_API_TOKEN
+#   Resend        COLORS_PAR_RESEND_API_KEY COLORS_PAR_RESEND_PASSWORD
+#
+# Optional Rama license:
+#   COLORS_PAR_RAMA_LICENSE_SOURCE_PATH
+#
+# Never export COLORS_PAR_PROFILE. The profile identifies this deployment and
+# its state; the launcher must reject attempts to overlay it.
+
+profile: rama-digitalocean
+workdir: .colors
+
+provider-compute: digitalocean
+# Accepted values: cloudflare, null, false, or no. The latter three disable DNS
+# and make generated connection details fall back to the Droplet public IP.
+provider-dns: cloudflare
+# Accepted values: resend, null, false, or no. The latter three disable all
+# Resend resources and machine mail configuration.
+provider-smtp: resend
+provider-backend: local
+
+# Preserve this guard in committed desired state. It may only be overridden for
+# an explicitly authorized deletion.
+compute-prevent-destroy: true
+
+# --- Rama -------------------------------------------------------------------
+
+rama-cluster-name: rama-digitalocean
+rama-deployment: single-node
+rama-version: 1.9.0
+rama-source-url: https://redplanetlabs.s3.us-west-2.amazonaws.com/rama/rama-1.9.0.zip
+rama-license: false
+
+# Rama, ZooKeeper, the locally executable Rama CLI, and their generated
+# configuration use this pinned ZooKeeper release.
+zookeeper-version: 3.8.4
+zookeeper-source-url: https://archive.apache.org/dist/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz
+java-version: 21
+
+# Keep all persistent Rama data on the Droplet's included SSD.
+rama-data-dir: /data/rama
+rama-supervisor-port-range:
+  - 20000
+  - 21000
+
+# --- DigitalOcean -----------------------------------------------------------
+
+digitalocean-name: rama-digitalocean
+digitalocean-region: ams3
+digitalocean-size: s-8vcpu-16gb
+digitalocean-image: ubuntu-24-04-x64
+digitalocean-ssh-authorized-keys: ~/.ssh/id_ed25519.pub
+
+# A deployment-owned VPC; no existing DigitalOcean network is assumed.
+digitalocean-vpc-cidr: 10.24.0.0/20
+
+# SSH remains public but is restricted to the public IPv4 of the machine from
+# which this desired state was scaffolded.
+digitalocean-ssh-sources:
+  - 130.61.79.89/32
+
+# WireGuard must accept roaming clients, so its UDP endpoint is public. Rama
+# services themselves bind to the VPN and are not exposed publicly.
+digitalocean-wireguard-sources:
+  - 0.0.0.0/0
+  - "::/0"
+
+# --- WireGuard --------------------------------------------------------------
+
+wireguard-port: 51820
+wireguard-network-cidr: 10.25.0.0/24
+wireguard-server-address: 10.25.0.1/24
+wireguard-client-address: 10.25.0.2/32
+
+# The package generates a private client configuration for this machine. The
+# local `green rama ...` command downloads/caches this Rama release, uses the
+# generated VPN-aware rama.yaml, and invokes Rama's bundled Python CLI locally.
+wireguard-client-name: rama-digitalocean
+
+# --- DNS and Resend ---------------------------------------------------------
+
+# With Cloudflare enabled this is a DNS-only A record for the Droplet. With DNS
+# disabled the generated WireGuard client uses the public IP directly.
+rama-host: rama.bigconfig.online
+cloudflare-zone: bigconfig.online
+cloudflare-proxied: false
+
+# Resend follows ONCE's convention: create and verify
+# notifications.bigconfig.online, then configure the machine to relay through
+# smtp.resend.com:587 as user `resend`.
+rama-smtp-from: rama@notifications.bigconfig.online

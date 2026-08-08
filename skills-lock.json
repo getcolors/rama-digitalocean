@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "package-rama-green": {
+      "source": "getcolors/rama",
+      "sourceType": "github",
+      "skillPath": "skills/package-rama-green/SKILL.md",
+      "computedHash": "31bd7116d72bdcefa5d124b2cd34bf08f7fab73fa2365c6561b4e32e0bbaa643"
+    }
+  }
+}

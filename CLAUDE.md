@@ -103,9 +103,14 @@ recovery step.
 ## Documentation and GitHub Pages
 
 `index.html` is the public deployment runbook and `.nojekyll` keeps GitHub Pages
-from applying Jekyll processing. The page uses GA4 ID `G-4VKP1WY4QJ`; its
-explicit `page_title` must exactly match the decoded `<title>`. Do not publish
-private addresses, credentials, license content, or generated state.
+from applying Jekyll processing. The page carries two analytics tags: GA4 ID
+`G-4VKP1WY4QJ`, whose explicit `page_title` must exactly match the decoded
+`<title>`, and the self-hosted Rybbit snippet
+`<script src="https://rybbit.getcolors.ai/api/script.js" data-site-id="9fb9c41a6d49" defer></script>`,
+which shares one site ID across every repository page because
+`getcolors.github.io/<repo>/` paths already encode the repository. Keep both
+tags together. Do not publish private addresses, credentials, license content,
+or generated state.
 
 ## Git
 

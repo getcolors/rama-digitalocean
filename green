@@ -50,7 +50,7 @@
 ;; cannot resolve its own library says so rather than inventing a SHA or
 ;; silently falling back to whatever is lying around. `bb pin` refuses to stamp
 ;; a dirty or unpushed HEAD for the same reason.
-(def ^:private rama-sha "6ff19acd36ea4a924b8d72ecc2351c802b3274aa")
+(def ^:private rama-sha "195a36846b38e20d38f876bf1037f2d40d42910c")
 
 (def ^:private rama-git-url "https://github.com/getcolors/rama.git")
 (def ^:private green-git-url "https://github.com/getcolors/green.git")
@@ -71,7 +71,8 @@
   (when (and (System/getProperty "babashka.version") (not resolved?))
     (let [rama (lib-coord "RAMA_LIB_ROOT" rama-git-url rama-sha nil)
           green (lib-coord "GREEN_LIB_ROOT" green-git-url nil nil)
-          once (lib-coord "ONCE_LIB_ROOT" once-git-url nil "green")]
+          once (lib-coord "ONCE_LIB_ROOT" once-git-url nil "green")
+          compute (lib-coord "COLORS_COMPUTE_LIB_ROOT" "https://github.com/getcolors/colors-compute.git" nil "green")]
       (if-not rama
         (str "this launcher carries no rama pin.\n"
              "It has not been stamped by `bb pin`, which cannot run until the "
@@ -80,7 +81,8 @@
         (do ((requiring-resolve 'babashka.deps/add-deps)
              {:deps (cond-> {'io.github.getcolors/rama rama}
                       green (assoc 'io.github.getcolors/green green)
-                      once (assoc 'io.github.getcolors/once once))})
+                      once (assoc 'io.github.getcolors/once once)
+                      compute (assoc 'io.github.getcolors/colors-compute compute))})
             nil)))))
 
 ;; Nothing is required at the top level, deliberately. A bootstrap that resolved

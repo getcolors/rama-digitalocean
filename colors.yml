@@ -23,7 +23,7 @@ provider-dns: cloudflare
 # Accepted values: resend, null, false, or no. The latter three disable all
 # Resend resources and machine mail configuration.
 provider-smtp: resend
-provider-backend: local
+provider-backend: r2
 
 # Preserve this guard in committed desired state. It may only be overridden for
 # an explicitly authorized deletion.
@@ -95,3 +95,10 @@ cloudflare-proxied: false
 # notifications.bigconfig.online, then configure the machine to relay through
 # smtp.resend.com:587 as user `resend`.
 rama-smtp-from: rama@notifications.bigconfig.online
+
+# Existing resources require explicit state transfer before create.
+compute-require-existing-state: true
+
+# Shared workspace R2 state backend; credentials stay in the environment.
+r2-bucket: tofu-state-319271fed8bc6d2d9059362be1165f37-eu
+r2-endpoint: https://319271fed8bc6d2d9059362be1165f37.eu.r2.cloudflarestorage.com

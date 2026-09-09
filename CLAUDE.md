@@ -51,8 +51,9 @@ verifies the notification domain and configures SMTP relay. `rama-license` is
 false; if licensing is enabled later, only the local source path may be supplied
 through `COLORS_PAR_RAMA_LICENSE_SOURCE_PATH`.
 
-The current backend is local, so retained `.colors/` state is required to manage
-the existing infrastructure safely. It also contains generated WireGuard client
+The desired backend is R2 with compute-require-existing-state enabled.
+Retain the former local `.colors/` state until the ownership transfer described
+in compute-migration.md is complete. It also contains generated WireGuard client
 material and is sensitive. Never use it as source, publish it, edit it, or commit
 it.
 

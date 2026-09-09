@@ -27,5 +27,6 @@ Configuration changes:
 The existing-state guard prevents fresh creation in an empty R2 backend.
 Keep it enabled after transfer; it is not a migration executor.
 
-The external provider key reference is preserved. Verify its matching local
-identity and make ssh-private-key-path explicit before live application access.
+The external provider key reference is preserved. Verify that the operator
+SSH agent can authenticate, or configure ssh-private-key-path when an explicit
+identity is needed, before live application access.
